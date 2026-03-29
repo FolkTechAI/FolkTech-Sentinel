@@ -22,15 +22,12 @@ import signal
 import argparse
 from datetime import datetime
 
-# Add project root to path so imports work
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from alerts import AlertManager, Severity
-from intel import IntelEngine
-from config import SCAN_INTERVAL, LOG_DIR
-from monitors.process import ProcessMonitor
-from monitors.network import NetworkMonitor
-from monitors.tcc import TCCMonitor
+from sentinel.alerts import AlertManager, Severity
+from sentinel.intel import IntelEngine
+from sentinel.config import SCAN_INTERVAL, LOG_DIR
+from sentinel.monitors.process import ProcessMonitor
+from sentinel.monitors.network import NetworkMonitor
+from sentinel.monitors.tcc import TCCMonitor
 
 
 # ─────────────────────────────────────────────────────────────────────

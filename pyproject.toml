@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "folktech-sentinel"
+version = "1.0.0"
+description = "Local security monitor that detects unauthorized screen capture, audio recording, and data exfiltration"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "FolkTech AI", email = "mike@folktech.ai"},
+]
+keywords = ["security", "privacy", "monitoring", "screen-capture", "surveillance"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Security",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "psutil",
+    "python-dotenv",
+    "plyer",
+]
+
+[project.urls]
+Homepage = "https://github.com/FolkTechAI/FolkTech-Sentinel"
+Repository = "https://github.com/FolkTechAI/FolkTech-Sentinel"
+Issues = "https://github.com/FolkTechAI/FolkTech-Sentinel/issues"
+
+[project.scripts]
+sentinel = "sentinel.sentinel:main"
+sentinel-install = "sentinel.install:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

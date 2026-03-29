@@ -12,9 +12,9 @@ and the multiple Anthropic connections we found earlier.
 """
 
 import psutil
-from alerts import AlertManager, Severity
-from intel import IntelEngine
-from config import WATCHED_APPS
+from sentinel.alerts import AlertManager, Severity
+from sentinel.intel import IntelEngine
+from sentinel.config import WATCHED_APPS
 
 
 class NetworkMonitor:

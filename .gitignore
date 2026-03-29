@@ -4,3 +4,7 @@ __pycache__/
 venv/
 logs/
 baseline.json
+dist/
+build/
+*.egg-info
+src/*.egg-info

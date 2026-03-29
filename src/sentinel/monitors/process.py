@@ -12,8 +12,8 @@ agent with --allowedTools mcp__computer-use before we found it manually.
 """
 
 import psutil
-from alerts import AlertManager, Severity
-from config import (
+from sentinel.alerts import AlertManager, Severity
+from sentinel.config import (
     SCREEN_CAPTURE_PATTERNS,
     AUDIO_CAPTURE_PATTERNS,
     SUSPICIOUS_PROCESS_NAMES,

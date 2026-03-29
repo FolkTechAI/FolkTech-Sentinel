@@ -23,8 +23,8 @@ import platform
 from dataclasses import dataclass
 from typing import Optional
 
-from alerts import AlertManager, Severity
-from config import TCC_WATCHED_SERVICES, TCC_DB_SYSTEM, TCC_DB_USER
+from sentinel.alerts import AlertManager, Severity
+from sentinel.config import TCC_WATCHED_SERVICES, TCC_DB_SYSTEM, TCC_DB_USER
 
 IS_MACOS = platform.system() == "Darwin"
 

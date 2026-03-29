@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
-from config import KNOWN_TELEMETRY, KNOWN_API_ENDPOINTS, BASELINE_FILE
+from sentinel.config import KNOWN_TELEMETRY, KNOWN_API_ENDPOINTS, BASELINE_FILE
 
 
 @dataclass
