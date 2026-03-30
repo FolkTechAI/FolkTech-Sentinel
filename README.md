@@ -4,25 +4,26 @@ A read-only, local-only visibility tool that shows you what your operating syste
 
 > **⚠️ Important Notice**
 >
-> FolkTech Sentinel is for use **only on computers you personally own and fully control.** Do not install or run it on shared, workplace, family, or third-party devices without explicit, informed consent from every person who uses that device. You are solely responsible for complying with all applicable laws in your jurisdiction. This is an educational and personal-use project provided as-is without warranty. See [LICENSE](LICENSE).
+> FolkTech Sentinel is intended **only for use on computers you personally own and fully control.**
+> Do not install or run it on shared, workplace, family, or third-party devices without explicit, informed consent from every person who uses that device.
+> You are solely responsible for complying with all applicable laws in your jurisdiction regarding system monitoring, privacy, and consent.
+> This is an educational and personal-use project provided as-is without any warranty. See [LICENSE](LICENSE) for details.
 
 ---
 
 ## What Is FolkTech Sentinel?
 
-Sentinel is a lightweight Python utility that reads publicly available system information — the process table, active network connections, and (on macOS) the operating system's own permission database — and presents it to you in a structured, human-readable format.
+Sentinel is a lightweight Python utility that reads system information already tracked by your operating system — the process table, active network connections, and (on macOS) the permission database — and presents it in a clear, human-readable format.
 
-It runs entirely on your machine. It has no cloud backend, no telemetry, and no analytics. It does not modify, block, or intercept anything. It simply surfaces information your OS already tracks but does not make easily visible.
+It runs entirely locally with no cloud component, no telemetry, and no data collection. It does not modify, block, or intercept anything on your system.
 
 ---
 
 ## Why It Exists
 
-AI desktop applications — including Claude, Perplexity, ChatGPT Desktop, Cursor, and others — typically request broad system permissions during setup: Screen Recording, Accessibility, Camera, and Microphone. Once granted, these permissions persist and can be exercised by background processes without any visible indicator.
+Modern AI desktop applications (such as Claude, Perplexity, ChatGPT Desktop, Cursor, and others) often request broad system permissions including Screen Recording, Accessibility, Camera, and Microphone access. Once granted, these permissions can be used by background processes with little ongoing visibility to the user.
 
-Most users grant these permissions during onboarding and never revisit them. Sentinel was built to make that information accessible again — so you can periodically review which applications hold sensitive permissions, which processes are exercising them, and where those applications are connecting.
-
-It is a **personal awareness utility**, not a security product.
+Sentinel helps you periodically review which applications hold these permissions, when processes appear to be using them, and where watched applications are connecting on the network. It is a **personal awareness utility**, not a security product.
 
 ---
 
@@ -30,33 +31,33 @@ It is a **personal awareness utility**, not a security product.
 
 | Capability | Description |
 |-----------|-------------|
-| **Process Visibility** | Lists running processes that match known screen-capture, video-recording, or audio-input API patterns across macOS, Windows, and Linux. |
-| **Network Visibility** | Shows active outbound connections from applications you choose to watch. Optionally resolves destination IPs to hostnames and organizations via reverse DNS and WHOIS. |
-| **Permission Reporting** (macOS) | Reads the macOS TCC (Transparency, Consent, and Control) database to list which applications currently hold Screen Recording, Camera, Microphone, Accessibility, and Input Monitoring permissions. |
-| **Baseline Comparison** | Saves a snapshot of observed network connections. Subsequent runs note any destinations not present in the baseline. |
-| **Cross-Platform** | Process and network visibility work on macOS, Windows, and Linux. Permission reporting is macOS-specific. |
-| **Auto-Start** | Optional installer configures your OS to run Sentinel at login — LaunchAgent (macOS), Task Scheduler (Windows), or systemd (Linux). |
+| **Process Visibility** | Identifies processes matching known patterns associated with screen capture, video recording, or audio input APIs (macOS, Windows, Linux). |
+| **Network Visibility** | Shows outbound network connections from applications you choose to watch. Optionally resolves IPs to hostnames and organizations via reverse DNS and WHOIS. |
+| **Permission Reporting** (macOS only) | Reads the macOS TCC database to list applications that currently hold Screen Recording, Camera, Microphone, Accessibility, or Input Monitoring permissions. |
+| **Baseline Comparison** | Lets you save a snapshot of observed connections for easier comparison on future runs. |
+| **Cross-Platform** | Core functionality works on macOS, Windows, and Linux. Permission reporting is macOS-specific. |
+| **Optional Auto-Start** | Installer can configure the tool to run at login — LaunchAgent (macOS), Task Scheduler (Windows), or systemd (Linux). |
 
-### Status Levels
+### Observation Levels
 
-Sentinel categorizes observations into three levels for readability:
+For easier reading, Sentinel uses three simple categories:
 
-| Level | Meaning | Output |
-|-------|---------|--------|
-| **High** | A process is actively exercising screen or audio capture APIs, or a connection was observed to a destination not yet identified | Desktop notification + log file |
-| **Notable** | A connection to a recognized analytics or telemetry service was observed, or a permission change was noted | Desktop notification + log file |
-| **Info** | Routine — scan completed, baseline saved | Log file only |
+| Level | Description | Output |
+|-------|-------------|--------|
+| **High** | A process is using screen or audio capture patterns, or a connection to an unidentified destination was observed | Desktop notification + log |
+| **Notable** | A connection to a recognized analytics or telemetry service was observed, or a permission change was noted | Desktop notification + log |
+| **Info** | Routine scan information | Log file only |
 
 ---
 
 ## What This Tool Does NOT Do
 
-- **Does not record your screen or audio.** It reads process metadata to note when other applications appear to be doing so. It never captures content.
-- **Does not block, intercept, or modify any network traffic.** It reads connection metadata (IP addresses, ports, process names) from the OS and reports what it finds.
-- **Does not transmit any of your data.** There is no analytics, no telemetry, no cloud component. The only outbound requests are optional WHOIS lookups used to identify IP address ownership.
-- **Does not require root or administrator privileges.** It runs under your normal user account.
-- **Does not function as a firewall, antivirus, or endpoint protection tool.** It is a read-only visibility and awareness utility.
-- **Does not make security guarantees.** It surfaces OS-level information to help you make informed decisions. It does not certify that any application is safe or unsafe.
+- It does **not** record your screen or audio — it only notes when other applications appear to be using related APIs.
+- It does **not** block, intercept, or modify network traffic.
+- It does **not** transmit any data from your machine (optional WHOIS lookups for IP identification are the only external requests).
+- It does **not** require root or administrator privileges.
+- It is **not** a firewall, antivirus, or security enforcement tool — it is purely a read-only visibility utility.
+- It does **not** make security guarantees or certify any application as safe or unsafe. It surfaces information so you can make your own informed decisions.
 
 ---
 
@@ -82,6 +83,8 @@ git clone https://github.com/FolkTechAI/FolkTech-Sentinel.git
 cd FolkTech-Sentinel
 python install.py
 ```
+
+The source installer creates a virtual environment, installs dependencies, and optionally configures auto-start.
 
 ---
 
@@ -147,7 +150,7 @@ No elevated permissions required. Process and network visibility use standard `p
 - **Polling-based.** Sentinel reads the process table at a configurable interval (default: 5 seconds). A process that starts and exits between scans would not be observed.
 - **Pattern-based.** Identification relies on known command-line strings and process names. Processes that obscure their command lines may not be recognized.
 - **macOS-only permission reporting.** The TCC database is a macOS feature. Windows and Linux lack a centralized equivalent.
-- **WHOIS rate limits.** Lookups are cached locally, but scanning many new IPs quickly may trigger rate limiting from WHOIS servers.
+- **WHOIS rate limits.** Lookups are cached locally, but querying many new IPs quickly may trigger rate limiting from WHOIS servers.
 - **Not a security product.** Sentinel is an awareness tool. It does not prevent, block, or remediate anything. It presents information so you can make your own decisions.
 
 ---
@@ -168,7 +171,7 @@ If installed from source, delete the project directory and any auto-start entry 
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
