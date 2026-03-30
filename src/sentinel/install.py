@@ -19,11 +19,21 @@ from pathlib import Path
 
 PLATFORM = platform.system()
 SENTINEL_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
-SENTINEL_SCRIPT = SENTINEL_DIR / "sentinel.py"
 
 
 def get_python_path() -> str:
-    """Get the path to Python in the venv, or system Python."""
+    """Get the Python that has sentinel installed.
+
+    Prefers the currently running interpreter (which is the one
+    that has the package installed, whether via pip or editable install).
+    Falls back to a local venv for from-source installs.
+    """
+    # If we're running inside a venv/pip install, use that Python
+    # (it already has sentinel installed)
+    if hasattr(sys, 'prefix') and sys.prefix != sys.base_prefix:
+        return sys.executable
+
+    # Fall back to local venv for from-source installs
     if PLATFORM == "Windows":
         venv_python = SENTINEL_DIR / "venv" / "Scripts" / "python.exe"
     else:
@@ -35,7 +45,19 @@ def get_python_path() -> str:
 
 
 def setup_venv():
-    """Create virtual environment and install dependencies."""
+    """Create virtual environment and install dependencies.
+
+    Only needed for from-source installs. When installed via pip,
+    dependencies are already satisfied and this step is skipped.
+    """
+    requirements_file = SENTINEL_DIR / "requirements.txt"
+
+    # If no requirements.txt, we're running as a pip-installed package.
+    # Dependencies are already installed — nothing to do.
+    if not requirements_file.exists():
+        print("Dependencies already satisfied (pip-installed package).")
+        return
+
     venv_dir = SENTINEL_DIR / "venv"
 
     if not venv_dir.exists():
@@ -45,7 +67,7 @@ def setup_venv():
     python = get_python_path()
     print("Installing dependencies...")
     subprocess.run(
-        [python, "-m", "pip", "install", "-r", str(SENTINEL_DIR / "requirements.txt"), "-q"],
+        [python, "-m", "pip", "install", "-r", str(requirements_file), "-q"],
         check=True,
     )
     print("Dependencies installed.")
@@ -67,10 +89,9 @@ MACOS_PLIST_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <key>ProgramArguments</key>
     <array>
         <string>{python}</string>
-        <string>{script}</string>
+        <string>-m</string>
+        <string>sentinel.sentinel</string>
     </array>
-    <key>WorkingDirectory</key>
-    <string>{workdir}</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
@@ -92,8 +113,6 @@ def install_macos():
 
     plist_content = MACOS_PLIST_TEMPLATE.format(
         python=python,
-        script=str(SENTINEL_SCRIPT),
-        workdir=str(SENTINEL_DIR),
         logdir=str(log_dir),
     )
 
@@ -129,7 +148,7 @@ def install_windows():
         [
             "schtasks", "/create",
             "/tn", "FolkTechSentinel",
-            "/tr", f'"{python}" "{SENTINEL_SCRIPT}"',
+            "/tr", f'"{python}" -m sentinel.sentinel',
             "/sc", "onlogon",
             "/rl", "highest",
             "/f",  # Force overwrite if exists
@@ -174,13 +193,12 @@ LINUX_SERVICE_DIR = Path.home() / ".config" / "systemd" / "user"
 LINUX_SERVICE_PATH = LINUX_SERVICE_DIR / "sentinel.service"
 
 LINUX_SERVICE_TEMPLATE = """[Unit]
-Description=FolkTech Sentinel — Local Security Monitor
+Description=FolkTech Sentinel — Local Visibility Tool
 After=network.target
 
 [Service]
 Type=simple
-ExecStart={python} {script}
-WorkingDirectory={workdir}
+ExecStart={python} -m sentinel.sentinel
 Restart=always
 RestartSec=10
 StandardOutput=append:{logdir}/sentinel-daemon.out
@@ -199,8 +217,6 @@ def install_linux():
 
     service_content = LINUX_SERVICE_TEMPLATE.format(
         python=python,
-        script=str(SENTINEL_SCRIPT),
-        workdir=str(SENTINEL_DIR),
         logdir=str(log_dir),
     )
 
@@ -267,16 +283,15 @@ def main():
         install_linux()
     else:
         print(f"Unknown platform: {PLATFORM}. Auto-start not configured.")
-        print("You can still run Sentinel manually: python sentinel.py")
+        print("You can still run Sentinel manually: sentinel")
 
     print(f"\nInstallation complete.")
     print(f"Logs: {SENTINEL_DIR / 'logs'}")
-    print(f"Config: {SENTINEL_DIR / 'config.py'}")
     print(f"\nCommands:")
-    print(f"  python sentinel.py            # Run in foreground")
-    print(f"  python sentinel.py --report   # Show current status")
-    print(f"  python sentinel.py --baseline # Establish baseline")
-    print(f"  python install.py --remove    # Remove auto-start")
+    print(f"  sentinel              # Run in foreground")
+    print(f"  sentinel --report     # Show current status")
+    print(f"  sentinel --baseline   # Establish baseline")
+    print(f"  sentinel-install --remove  # Remove auto-start")
 
 
 if __name__ == "__main__":

@@ -2,12 +2,11 @@
 
 A read-only, local-only visibility tool that shows you what your operating system already knows about how desktop applications use screen, audio, and network access — presented in a clear, structured way.
 
-> **⚠️ Important Notice**
+---
+
+> ⚠️ **Important Notice**
 >
-> FolkTech Sentinel is intended **only for use on computers you personally own and fully control.**
-> Do not install or run it on shared, workplace, family, or third-party devices without explicit, informed consent from every person who uses that device.
-> You are solely responsible for complying with all applicable laws in your jurisdiction regarding system monitoring, privacy, and consent.
-> This is an educational and personal-use project provided as-is without any warranty. See [LICENSE](LICENSE) for details.
+> FolkTech Sentinel is intended **only for use on computers you personally own and fully control.** Do not install or run it on shared, workplace, family, or third-party devices without explicit, informed consent from every person who uses that device. You are solely responsible for complying with all applicable laws in your jurisdiction regarding system monitoring, privacy, and consent. This is an educational and personal-use project provided as-is without any warranty. See [LICENSE](LICENSE) for details.
 
 ---
 
@@ -40,13 +39,13 @@ Sentinel helps you periodically review which applications hold these permissions
 
 ### Observation Levels
 
-For easier reading, Sentinel uses three simple categories:
+For readability, Sentinel groups observations into three tiers. These are informational categories, not threat assessments:
 
-| Level | Description | Output |
-|-------|-------------|--------|
-| **High** | A process is using screen or audio capture patterns, or a connection to an unidentified destination was observed | Desktop notification + log |
-| **Notable** | A connection to a recognized analytics or telemetry service was observed, or a permission change was noted | Desktop notification + log |
-| **Info** | Routine scan information | Log file only |
+| Tier | What It Means | Output |
+|------|---------------|--------|
+| **Tier 1** | A process appears to be exercising screen or audio capture APIs, or a connection to an unrecognized destination was observed | Desktop notification + log |
+| **Tier 2** | A connection to a recognized analytics or telemetry service was observed, or a permission change was noted | Desktop notification + log |
+| **Tier 3** | Routine — scan completed, baseline saved | Log file only |
 
 ---
 
@@ -81,10 +80,9 @@ This installs two commands:
 ```bash
 git clone https://github.com/FolkTechAI/FolkTech-Sentinel.git
 cd FolkTech-Sentinel
-python install.py
+pip install -e .
+sentinel-install
 ```
-
-The source installer creates a virtual environment, installs dependencies, and optionally configures auto-start.
 
 ---
 
@@ -116,7 +114,13 @@ sentinel
 
 ## Configuration
 
-Edit `src/sentinel/config.py` to customize:
+After installation, you can customize Sentinel's behavior by editing the `config.py` file inside the installed package.
+
+To find its location on your system:
+
+```bash
+python -c "import sentinel.config; print(sentinel.config.__file__)"
+```
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -142,6 +146,17 @@ Sentinel reads the database that records which apps hold permissions. It **does 
 ### Windows and Linux
 
 No elevated permissions required. Process and network visibility use standard `psutil` APIs available to any user-level process.
+
+### Cross-Platform Support
+
+| Feature | macOS | Windows | Linux |
+|---------|-------|---------|-------|
+| Process Visibility | Full | Full | Full |
+| Network Visibility | Full | Full | Full |
+| TCC Permission Reporting | Full | N/A | N/A |
+| WHOIS Lookups | Built-in | Requires `whois` CLI | Requires `whois` CLI |
+| Desktop Notifications | Native (osascript) | plyer | notify-send |
+| Auto-start | LaunchAgent | Task Scheduler | systemd user service |
 
 ---
 
