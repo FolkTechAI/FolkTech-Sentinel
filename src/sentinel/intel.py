@@ -26,7 +26,7 @@ class Destination:
     port: int
     hostname: Optional[str] = None
     organization: Optional[str] = None
-    classification: str = "UNKNOWN"  # FIRST_PARTY, TELEMETRY, UNKNOWN
+    classification: str = "UNKNOWN"  # KNOWN_API, TELEMETRY, UNKNOWN
     first_seen: Optional[str] = None
     last_seen: Optional[str] = None
     seen_count: int = 0
