@@ -62,7 +62,18 @@ For readability, Sentinel groups observations into three tiers. These are inform
 
 ## Installation
 
-### From PyPI
+### From PyPI (recommended)
+
+**Linux (Ubuntu 23.04+, Debian 12+, Fedora 38+):**
+
+Modern Linux distros block global `pip install`. Use `pipx` instead:
+
+```bash
+sudo apt install pipx      # Debian/Ubuntu
+pipx install folktech-sentinel
+```
+
+**macOS / Windows / older Linux:**
 
 ```bash
 pip install folktech-sentinel
@@ -80,6 +91,7 @@ This installs two commands:
 ```bash
 git clone https://github.com/FolkTechAI/FolkTech-Sentinel.git
 cd FolkTech-Sentinel
+python3 -m venv venv && source venv/bin/activate
 pip install -e .
 sentinel-install
 ```
@@ -177,7 +189,8 @@ No elevated permissions required. Process and network visibility use standard `p
 sentinel-install --remove
 
 # Full removal
-pip uninstall folktech-sentinel
+pip uninstall folktech-sentinel    # if installed with pip
+pipx uninstall folktech-sentinel   # if installed with pipx
 ```
 
 If installed from source, delete the project directory and any auto-start entry created by the installer.
